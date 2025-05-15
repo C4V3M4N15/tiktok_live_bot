@@ -29,4 +29,4 @@ async def send_discord_message(channel_id: int, message: str):
         await channel.send(message)
 
 def run_discord_bot():
-    bot.run(token)
+    bot.start(token)

@@ -50,7 +50,7 @@ async def start_tiktok_bot():
         username = config["tiktok_username"]
         print(f"[TikTokBot] Starting stream listener for: {username}")
 
-        client = TikTokLiveClient(unique_id=username, log_level=LogLevel.ERROR)
+        client = TikTokLiveClient(unique_id=username)
         await handle_events(client, config)
 
         # Run the TikTok client in a background thread
