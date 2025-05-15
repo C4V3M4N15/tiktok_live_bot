@@ -2,6 +2,10 @@ import discord
 import os
 from discord.ext import commands
 
+def create_discord_bot(server_config):
+    intents = discord.Intents.all()
+    bot = discord.Client(intents=intents)
+
 intents = discord.Intents.default()
 intents.messages = True
 intents.guilds = True
@@ -28,5 +32,10 @@ async def send_discord_message(channel_id: int, message: str):
     if channel:
         await channel.send(message)
 
-async def run_discord_bot():
+async def run_discord_bot(server_config):
+    token = server_config.get("discord_bot_token")
+    if not token:
+        raise ValueError(":Missing discord bot token in server config")
+    
+    bot = create_discord_bot(server_config)
     await bot.start(token)

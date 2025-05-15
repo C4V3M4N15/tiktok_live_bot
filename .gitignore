@@ -33,3 +33,4 @@ config.py
 *.token
 
 firebase.json
+serviceAccountKey.json

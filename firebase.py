@@ -9,7 +9,6 @@ cred_path = os.environ.get("FIREBASE_CREDENTIALS_PATH", "serviceAccountKey.json"
 # Load the JSON credentials from the file
 with open(cred_path, "r") as f:
     cred_data = json.load(f)
-
 cred = credentials.Certificate(cred_data)
 firebase_admin.initialize_app(cred)
 
