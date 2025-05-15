@@ -41,15 +41,23 @@ async def handle_events(client: TikTokLiveClient, config: dict):
 async def start_tiktok_bot():
     configs = get_all_active_configs()
     if not configs:
-        print("No active configs found.")
+        print("[TikTokBot] No active configs found.")
         return
 
     tasks = []
+
     for config in configs:
         username = config["tiktok_username"]
+        print(f"[TikTokBot] Starting stream listener for: {username}")
+
         client = TikTokLiveClient(unique_id=username, log_level=LogLevel.ERROR)
         await handle_events(client, config)
-        tasks.append(asyncio.create_task(client.start()))
 
+        # Run the TikTok client in a background thread
+        loop = asyncio.get_event_loop()
+        tasks.append(loop.run_in_executor(None, client.run))
+
+    # Add the like-reset task
     tasks.append(asyncio.create_task(like_reset_loop()))
+
     await asyncio.gather(*tasks)
