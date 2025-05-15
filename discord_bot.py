@@ -28,5 +28,5 @@ async def send_discord_message(channel_id: int, message: str):
     if channel:
         await channel.send(message)
 
-def run_discord_bot():
-    bot.start(token)
+async def run_discord_bot():
+    await bot.start(token)
