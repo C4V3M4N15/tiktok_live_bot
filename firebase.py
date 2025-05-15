@@ -4,7 +4,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore, auth
 
 # Path to your Firebase service account JSON secret file
-cred_path = os.environ.get("FIREBASE_CREDENTIALS_PATH", "/serviceAccountKey.json")
+cred_path = os.environ.get("FIREBASE_CREDENTIALS_PATH", "/run/secrets/serviceAccountKey.json")
 
 # Load the JSON credentials from the file
 with open(cred_path, "r") as f:
