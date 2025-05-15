@@ -2,7 +2,6 @@ import asyncio
 from collections import defaultdict
 from TikTokLive import TikTokLiveClient
 from TikTokLive.events import CommentEvent, LikeEvent, GiftEvent, FollowEvent
-from TikTokLive.client.logger import LogLevel
 from firebase import get_all_active_configs
 from discord_bot import send_discord_message
 
@@ -39,26 +38,12 @@ async def handle_events(client: TikTokLiveClient, config: dict):
         msg = f"❤️ {event.user.nickname} liked the stream ({user_like_counts[event.user.unique_id]} total)"
         await send_discord_message(discord_channel_id, msg)
 
-async def start_tiktok_bot():
-    configs = get_all_active_configs()
-    if not configs:
-        print("[TikTokBot] No active configs found.")
-        return
+async def start_tiktok_bot(tiktok_username, config):
+    print(f"[TikTokBot] Starting stream listener for: {tiktok_username}")
 
-    tasks = []
+    client = TikTokLiveClient(unique_id=tiktok_username)
+    await handle_events(client, config)
 
-    for config in configs:
-        username = config["tiktok_username"]
-        print(f"[TikTokBot] Starting stream listener for: {username}")
-
-        client = TikTokLiveClient(unique_id=username)
-        await handle_events(client, config)
-
-        # Run the TikTok client in a background thread
-        loop = asyncio.get_event_loop()
-        tasks.append(loop.run_in_executor(None, client.run))
-
-    # Add the like-reset task
-    tasks.append(asyncio.create_task(like_reset_loop()))
-
-    await asyncio.gather(*tasks)
+    loop = asyncio.get_event_loop()
+    # run client.run in executor to not block the event loop
+    await loop.run_in_executor(None, client.run)
