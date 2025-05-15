@@ -5,30 +5,36 @@ from tiktok_bot import start_tiktok_bot
 from discord_bot import run_discord_bot
 from firebase import get_all_active_configs
 
+
 def run_flask():
     app.run(host="0.0.0.0", port=5000)
 
+
 async def main():
+    # Start Flask server in background thread immediately
+    flask_thread = Thread(target=run_flask, daemon=True)
+    flask_thread.start()
+
     configs = get_all_active_configs()
     tasks = []
 
     for config in configs:
-        discord_token = config.get("discord_bot_token")
         tiktok_username = config.get("tiktok_username")
-
-        if not discord_token or not tiktok_username:
-            print(f"skipping config: Missing token or username: {config}")
+        if not tiktok_username:
+            print(f"Skipping config missing username: {config}")
             continue
 
-        print(f"[+] Launching for {tiktok_username}")
-        tasks.append(asyncio.create_task(start_tiktok_bot(tiktok_username)))
-        tasks.append(asyncio.create_task(run_discord_bot(discord_token)))
+        tasks.append(asyncio.create_task(start_tiktok_bot(tiktok_username, config)))
 
+        # Optional: add discord bot task if you have discord config
+        # if discord token in config:
+        #    tasks.append(asyncio.create_task(run_discord_bot(config)))
 
-    await asyncio.gather(*tasks)
+    if tasks:
+        await asyncio.gather(*tasks)
+    else:
+        print("No active bot tasks to run.")
 
-    flask_thread = Thread(target=run_flask, daemon=True)
-    flask_thread.start()
 
 if __name__ == "__main__":
     asyncio.run(main())
