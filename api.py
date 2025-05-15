@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify
 from firebase import update_server_config, get_server_config
+from discord_auth import discord_auth
 
 app = Flask(__name__)
+app.register_blueprint(discord_auth)
+
 
 @app.route("/subscribe", methods=["POST"])
 def subscribe():
