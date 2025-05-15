@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from firebase import check_user_subscription, add_subscription, remove_subscription
+from firebase import update_server_config
 
 app = Flask(__name__)
 
@@ -32,6 +32,16 @@ def unsubscribe():
 
     remove_subscription(discord_user_id)
     return jsonify({'success': True})
+
+@app.route("/update_config", methods=["POST"])
+def update_config():
+    data = request.json
+    server_id = data.get("server_id")
+    if not server_id:
+        return jsonify({"error": "Missing server_id"}), 400
+
+    update_server_config(server_id, data)
+    return jsonify({"success": True})
 
 if __name__ == '__main__':
     app.run(debug=True)

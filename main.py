@@ -1,7 +1,6 @@
 import asyncio
 from threading import Thread
 from api import app  # your Flask app
-
 from tiktok_client import start_tiktok_bot
 from discord_client import run_discord_bot
 
