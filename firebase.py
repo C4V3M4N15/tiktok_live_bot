@@ -1,11 +1,18 @@
-import firebase_admin
-from firebase_admin import credentials, firestore, auth
 import os
 import json
+import firebase_admin
+from firebase_admin import credentials, firestore, auth
 
-cred_data = json.loads(os.environ["FIREBASE_CREDENTIALS_JSON"])
+# Path to your Firebase service account JSON secret file
+cred_path = os.environ.get("FIREBASE_CREDENTIALS_PATH", "/serviceAccountKey.json")
+
+# Load the JSON credentials from the file
+with open(cred_path, "r") as f:
+    cred_data = json.load(f)
+
 cred = credentials.Certificate(cred_data)
 firebase_admin.initialize_app(cred)
+
 db = firestore.client()
 
 def get_all_active_configs():
