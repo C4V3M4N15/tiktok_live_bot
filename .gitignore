@@ -32,4 +32,4 @@ config.py
 # Any other secrets or tokens
 *.token
 
-serviceAccountKey.json
+firebase.json
